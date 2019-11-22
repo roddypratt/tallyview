@@ -37,7 +37,7 @@ function tallyToCol(t:number) : string
 
 require('electron').ipcRenderer.on('tally', (event, addr: number, msg:string, tally1 : number, tally2 : number,tally3 : number,tally4 : number) => {
 
-    $("#tally" + addr + " td:nth-child(3)" ).html("<samp>"+msg+"</samp>");
+    $("#tally" + addr + " td:nth-child(3)" ).html(msg);
     $("#tally" + addr + " td:nth-child(2)" ).css("background-color", tallyToCol(tally1));
     $("#tally" + addr + " td:nth-child(4)" ).css("background-color", tallyToCol(tally2));
     $("#tally" + addr + " td:nth-child(5)" ).css("background-color", tallyToCol(tally3));

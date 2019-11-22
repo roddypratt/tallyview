@@ -1,25 +1,27 @@
 {
-  "name": "talli",
+  "name": "tallyview",
   "version": "1.0.0",
-  "description": "Tally test with Electron",
+  "description": "View TSL UMD Tallies, V3+V4",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron .",
+    "dev": "tsc && electron jsout/main.js",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
-  "author": "",
+  "author": {
+    "name": "Roddy Pratt",
+    "email": "roddy@rascular.com"
+  },
   "license": "ISC",
   "devDependencies": {
     "electron": "^7.1.1",
-    "electron-builder": "^21.2.0"
+    "electron-builder": "^21.2.0",
+    "typescript": "^3.7.2"
   },
   "build": {
-    "appId": "rascular.talli",
-    "mac": {
-      "category": "your.app.category.type"
-    }
+    "appId": "rascular.tallyview",
+    "mac": {}
   },
   "dependencies": {
     "@types/jquery": "^3.3.31",
