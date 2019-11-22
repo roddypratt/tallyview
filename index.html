@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' ; script-src 'self' 'unsafe-inline'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self''unsafe-inline'">
+    <title>TSL Tally Display</title>
+  </head>
+  <body>
+          <main role="main" class="container">
+    <h1>Tally Display</h1>
+    <!-- You can also require other files to run in this process -->
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="./contents/bootstrap/css/bootstrap.min.css" />
+
+<!-- Bootstrap Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script>var exports = {};</script>
+<script>require('popper.js');</script>
+<script>require('bootstrap');</script>
+
+    <script src="jsout/renderer.js"></script>
+
+    <table class="table table-sm table-dark table-bordered text-center" id="tallytab">
+      <thead>
+        <tr>
+          <th width="20%">Index</th>
+          <th width="10%">1</th>
+          <th >UMD Text</th>
+          <th width="10%">2</th>
+          <th width="10%">3</th>
+          <th width="10%">4</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    </main>
+  </body>
+</html>
