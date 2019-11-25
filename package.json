@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc && electron jsout/main.js",
+    "dev": "tsc && electron main.js",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
@@ -20,8 +20,9 @@
     "typescript": "^3.7.2"
   },
   "build": {
-    "appId": "rascular.tallyview",
-    "mac": {}
+    "appId": "com.electron.tallyview",
+    "mac": {},
+    "copyright" : "Copyright © 2019 Rascular Technology"
   },
   "dependencies": {
     "@types/jquery": "^3.3.31",
