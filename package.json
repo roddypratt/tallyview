@@ -1,6 +1,6 @@
 {
   "name": "tallyview",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "View TSL UMD Tallies, V3+V4",
   "main": "jsout/main.js",
   "scripts": {
@@ -9,7 +9,6 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "publish" : "tsc && electron-builder"
-    
   },
   "author": {
     "name": "Roddy Pratt",
