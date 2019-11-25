@@ -62,9 +62,9 @@ TallyView receives UDP messages on port 40001 ( currently hardwired), and automa
 <!-- GETTING STARTED -->
 ## Getting Started
 
-For Windows, download a pre-built installer 
+Download the latest release for a pre-built installer for Mac, Windows or Linux. 
 
-for other platforms, of if you want to tweak the code
+If you want to tweak the code
  
 1. Clone the repo
 ```sh
