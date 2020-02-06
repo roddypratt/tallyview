@@ -31,7 +31,7 @@ function createWindow() {
     mainWindow = null
   })
 }
-
+ 
 import dgram = require('dgram');
 
 let server: dgram.Socket = dgram.createSocket('udp4');
@@ -64,7 +64,7 @@ server.on('message', (message, remote) => {
     }
   });
 
-server.bind(40001, '127.0.0.1');
+server.bind(40001); // Listen on all interfaces
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
