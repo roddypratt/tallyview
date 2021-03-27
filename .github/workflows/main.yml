@@ -5,54 +5,53 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.7.0]
+        node-version: [14]
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: yarn install and dist
-      run: |
-        yarn
-        yarn run publish
-      env:
-        CI: true
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: yarn install and dist
+        run: |
+          yarn
+          yarn run publish
+        env:
+          CI: true
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
   macos:
-    runs-on: macOS-latest
+    runs-on: macos-latest
     strategy:
       matrix:
-        node-version: [12.7.0]
+        node-version: [14]
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: yarn install and dist
-      run: |
-        yarn
-        yarn run publish
-      env:
-        CI: true
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: yarn install and dist
+        run: |
+          yarn
+          yarn run publish
+        env:
+          CI: true
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
   windows:
     runs-on: windows-latest
     strategy:
       matrix:
-        node-version: [12.7.0]
+        node-version: [14]
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: yarn install and dist
-      run: |
-        yarn
-        yarn run publish
-      env:
-        CI: true
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: yarn install and dist
+        run: |
+          yarn
+          yarn run publish
+        env:
+          CI: true
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

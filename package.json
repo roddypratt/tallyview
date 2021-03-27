@@ -8,7 +8,8 @@
     "dev": "tsc && electron jsout/main.js",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "publish": "tsc && electron-builder"
+    "publish": "tsc && electron-builder",
+    "build": "tsc"
   },
   "author": {
     "name": "Roddy Pratt",
