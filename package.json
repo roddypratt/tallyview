@@ -1,6 +1,6 @@
 {
   "name": "tallyview",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "View TSL UMD Tallies, V3+V4",
   "main": "jsout/main.js",
   "scripts": {
