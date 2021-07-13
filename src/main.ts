@@ -33,17 +33,7 @@ function createWindow() {
   })
 }
 
-import dgram = require('dgram');
-
-let server: dgram.Socket = dgram.createSocket('udp4');
-
-server.on('listening', () => {
-  let address = server.address();
-  if (typeof address === "object")
-    console.log('UDP Server listening on ' + address.address + ":" + address.port);
-});
-
-server.on('message', (message, remote) => {
+function handleMessage(message) {
   if ((message.length >= 18) && (message[0] >= 128) && ((message[1] & 0x40) == 0)) {
     let addr = message[0] & 0x7f;
 
@@ -61,6 +51,44 @@ server.on('message', (message, remote) => {
         message[21] & 3, (message[21] >> 4) & 3);
     }
   }
+}
+
+import dgram = require('dgram');
+import net = require('net');
+
+let server: dgram.Socket = dgram.createSocket('udp4');
+
+server.on('listening', () => {
+  let address = server.address();
+  if (typeof address === "object")
+    console.log('UDP Server listening on ' + address.address + ":" + address.port);
+});
+
+server.on('message', (message, remote) => {
+  handleMessage(message)
+});
+
+let tcpServer = net.createServer();
+tcpServer.on('listening', () => {
+  let address = tcpServer.address();
+  if (typeof address === "object")
+    console.log('TCP Server listening on ' + address.address + ":" + address.port);
+});
+
+tcpServer.listen(40001);
+
+tcpServer.on('connection', (conn) => {
+  console.log('new client connection from %s', conn.remoteAddress + ':' + conn.remotePort);
+
+  var chunk = Buffer.alloc(0)
+  conn.on('data', (message) => {
+    message = Buffer.concat([chunk, message])
+    while (message.length >= 18) {
+      handleMessage(message.subarray(0, 18))
+      message = message.subarray(18)
+    }
+    chunk = message
+  })
 });
 
 server.bind(40001); // Listen on all interfaces
