@@ -17,7 +17,7 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "electron": "^12.0.2",
+    "electron": "^13.1.6",
     "electron-builder": "^22.3.2",
     "typescript": "^4.2.3"
   },
@@ -28,8 +28,7 @@
   },
   "dependencies": {
     "@types/jquery": "^3.3.31",
-    "bootstrap": "^4.3.1",
-    "jquery": "^3.5.0",
-    "popper.js": "^1.16.0"
+    "bootstrap": "^5.0.2",
+    "jquery": "^3.5.0"
   }
 }
