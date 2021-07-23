@@ -48,7 +48,8 @@
 
 TallyView gives a live view of UMD text and tallies received using the TSL UMD protocol, either V3.1 or V4.
 
-TallyView receives UDP messages on port 40001 ( currently hardwired), and automatically detects both V3.1 and V4 protocol variants. V4 packets with bad checksums are ignored. 
+TallyView receives UDP messages on port 40001 (currently hardwired), and automatically detects both V3.1 and V4 protocol variants. V4 packets with bad checksums are ignored. 
+TallyView receives TCP messages on port 40001 (currently hardwired). This only supports V3.1 protocol. 
 
 ![TallyView Screen Shot](screenshot.png)
 

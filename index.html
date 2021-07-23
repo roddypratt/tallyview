@@ -11,34 +11,104 @@
 
 <body>
   <main role="main" class="container">
-    <h3 class="text-center">TallyView</h3>
+
     <!-- You can also require other files to run in this process -->
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="./contents/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./contents/bootstrap/5.0.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="./contents/tallyview.css" />
 
-    <!-- Bootstrap Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script>var exports = {};</script>
-    <script>require('popper.js');</script>
-    <script>require('bootstrap');</script>
+
+    <h3 class="text-center">TallyView 1.1</h3>
+    <hr>
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+          role="tab" aria-controls="home" aria-selected="true">UMDs</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab"
+          aria-controls="stats" aria-selected="false">Statistics</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button"
+          role="tab" aria-controls="contact" aria-selected="false">Settings</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="about-tab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab"
+          aria-controls="about" aria-selected="false">About TallyView</button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <table class="table table-sm table-dark table-bordered text-center" id="tallytab">
+          <thead>
+            <tr>
+              <th width="20%">Address</th>
+              <th width="10%">1</th>
+              <th>UMD Text</th>
+              <th width="10%">2</th>
+              <th width="10%">3</th>
+              <th width="10%">4</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-pane fade" id="stats" role="tabpanel" aria-labelledby="stats-tab">
+        <table class="table table-sm table-bordered table-striped " id="statstable">
+          <thead>
+            <tr>
+              <th>Value</th>
+              <th>Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>UDP V3.1 Packets</td>
+              <td id="udp3count"></td>
+            </tr>
+            <tr>
+              <td>UDP V4.0 Packets</th>
+              <td id="udp4count"></td>
+            </tr>
+            <tr>
+              <td>UDP V5.0 Packets</th>
+              <td id="udp5count"></td>
+            </tr>
+            <tr>
+              <td>TCP V3.1 Packets</th>
+              <td id="tcp3count"></td>
+            </tr>
+            <tr>
+              <td>TCP V4.0 Packets</th>
+              <td id="tcp4count"></td>
+            </tr>
+            <tr>
+              <td>UDP Errors</th>
+              <td id="udpErrors"></td>
+            </tr>
+            <tr>
+              <td>TCP Errors</th>
+              <td id="tcpErrors"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="contact-tab">Settings go here</div>
+      <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="contact-tab">
+        <h4>TallyView 1.1</h3>
+          <p> Copyright
+            Copyright © 2019-2021 Rascular Technology</p>
+      </div>
+    </div>
 
     <script src="jsout/renderer.js"></script>
 
-    <table class="table table-sm table-dark table-bordered text-center" id="tallytab">
-      <thead>
-        <tr>
-          <th width="20%">Address</th>
-          <th width="10%">1</th>
-          <th>UMD Text</th>
-          <th width="10%">2</th>
-          <th width="10%">3</th>
-          <th width="10%">4</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
+
   </main>
 </body>
 
