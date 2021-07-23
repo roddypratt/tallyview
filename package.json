@@ -1,11 +1,12 @@
 {
   "name": "tallyview",
+  "productName": "TallyView",
   "version": "1.1.0",
   "description": "View TSL UMD Tallies, V3+V4",
   "main": "jsout/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc && electron jsout/main.js",
+    "dev": "tsc && electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "publish": "tsc && electron-builder",

@@ -147,7 +147,31 @@ function handleV5Message(message: Buffer, stats: Stats) {
 import dgram = require('dgram');
 import net = require('net');
 
+function isObjectEmpty(obj) {
+  return Object.keys(obj).length === 0;
+}
+
+import storage = require('electron-json-storage');
+
+class Settings {
+  udp34Port: number = 40001
+  tcp3Port: number = 40001
+  tcp4Port: number = 40002
+  udp5Port: number = 40003
+}
 let v3server: dgram.Socket = dgram.createSocket('udp4');
+
+app.setName("TallyView")
+
+console.log(storage.getDataPath());
+
+let settings = new Settings;
+
+let stored: Settings = storage.getSync("settings")
+if (!isObjectEmpty(stored))
+  settings = { ...settings, ...stored }
+else
+  storage.set("settings", settings);
 
 v3server.on('listening', () => {
   let address = v3server.address();
@@ -158,7 +182,7 @@ v3server.on('listening', () => {
 v3server.on('message', (message, remote) => {
   handleV3V4Message(message, udpStats)
 });
-v3server.bind(40001); // Listen on all interfaces
+v3server.bind(settings.udp34Port); // Listen on all interfaces
 
 
 let v5server: dgram.Socket = dgram.createSocket('udp4');
@@ -172,7 +196,7 @@ v5server.on('listening', () => {
 v5server.on('message', (message, remote) => {
   handleV5Message(message, udpStats)
 });
-v5server.bind(40003); // Listen on all interfaces
+v5server.bind(settings.udp5Port); // Listen on all interfaces
 
 
 let tcpV3Server = net.createServer();
@@ -197,7 +221,8 @@ tcpV3Server.on('connection', (conn) => {
   })
 });
 
-tcpV3Server.listen(40001);
+tcpV3Server.listen(settings.tcp3Port
+);
 
 let tcpV4Server = net.createServer();
 tcpV4Server.on('listening', () => {
@@ -220,7 +245,7 @@ tcpV4Server.on('connection', (conn) => {
   })
 });
 
-tcpV4Server.listen(40002);
+tcpV4Server.listen(settings.tcp4Port);
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
