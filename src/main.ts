@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
 import { app, BrowserWindow, Menu, dialog } from 'electron'
+import { Settings } from './settings'
 import path = require('path')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -16,6 +17,7 @@ class Stats {
 let tcpStats = new Stats
 let udpStats = new Stats
 
+global.settings = new Settings;
 
 function createWindow() {
   // Create the browser window.
@@ -24,7 +26,8 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      additionalArguments: ["--settings=" + JSON.stringify(global.settings)] // Hack to get settings to renderer
     },
     icon: "build/icon.png"
   })
@@ -44,9 +47,6 @@ function createWindow() {
           label: 'Developer Tools', role: "toggleDevTools"
         }, {
           label: 'About TallyView...', role: "about"
-          //  click() {
-          //   dialog.showMessageBox({ title: "About TallyView", message: "TallyView 1.1", detail: "Built with Electron!" })
-          //}
         }
       ]
     }
@@ -111,37 +111,32 @@ const STX = 0x02
 
 function handleV5Message(message: Buffer, stats: Stats) {
   let ok = false;
+
   if ((message.length >= 8) && (message[0] == DLE && [message[1] == STX])) {
-    let pktlen = (message[3] << 8) || message[2];
+    let pktlen = message.readUInt16LE(2);
     for (let index = 4; index < message.length; index++) {
 
       if ((message[index] == DLE) && (message[index + 1] == DLE)) {
         message = Buffer.concat([message.subarray(0, index), message.slice(index + 2)])
       }
-
     }
     if ((message.length == pktlen + 4) && ((message[5] & 2) == 0)) {
       let unicode = (message[5] & 1) == 1
-      let msgs = message.subarray()
+      message = message.subarray(8)
+      let index = message.readUInt16LE(0);
+      let control = message.readUInt16LE(2);
+      let length = message.readUInt16LE(4);
+      let text = message.toString(unicode ? 'utf16le' : 'utf8', 6, 6 + length)
+
+      {
+        mainWindow.webContents.send("tally", index, text, control & 3, (control >> 4) & 3, (control >> 2) & 3, 0); /// TODO : Handle tallies
+        stats.v5count++;
+        ok = true
+      }
     }
   }
-  // if ((message.length >= 18) && (message[0] >= 128) && ((message[1] & 0x40) == 0)) {
-  //   let addr= message[0] & 0x7f;
-
-  //   let msg = message.subarray(2, 18).toString();
-  //   let sum = (- message.subarray(0, 18).reduce((a, b) => a + b, 0)) & 0x7f;
-  //   if (message.length == 18) {
-  //     let bright = (message[1] & 0x30) >> 4;
-  //     let tallybits = (message[1] & 0x0f);
-  //     mainWindow.webContents.send("tally", addr, msg, tallybits & 1, tallybits & 2, (tallybits & 4) ? 3 : 0, (tallybits & 8) ? 3 : 0); // makes tally 1  red, tally 2 green, 3,4 amber
-  //   }
-  //   else if ((message.length == 22) && (sum == message[18]) && (message[19] == 2)) // ignore checksum fails and packets with wrong length
-  //   {
-  //     // TODO: Handle different text colours. 
-  //     mainWindow.webContents.send("tally", addr, msg, message[20] & 3, (message[20] >> 4) & 3,
-  //       message[21] & 3, (message[21] >> 4) & 3);
-  //   }
-  // }
+  if (!ok) stats.errors++;
+  updateStats()
 }
 
 import dgram = require('dgram');
@@ -153,99 +148,93 @@ function isObjectEmpty(obj) {
 
 import storage = require('electron-json-storage');
 
-class Settings {
-  udp34Port: number = 40001
-  tcp3Port: number = 40001
-  tcp4Port: number = 40002
-  udp5Port: number = 40003
-}
-let v3server: dgram.Socket = dgram.createSocket('udp4');
-
 app.setName("TallyView")
-
-console.log(storage.getDataPath());
-
-let settings = new Settings;
 
 let stored: Settings = storage.getSync("settings")
 if (!isObjectEmpty(stored))
-  settings = { ...settings, ...stored }
+  global.settings = { ...global.settings, ...stored }
 else
-  storage.set("settings", settings);
+  storage.set("settings", global.settings);
 
-v3server.on('listening', () => {
-  let address = v3server.address();
-  if (typeof address === "object")
-    console.log('V3.1 and V4.0 UDP Server listening on ' + address.address + ":" + address.port);
-});
+if (global.settings.udp34Port > 0) {
+  let v3server: dgram.Socket = dgram.createSocket('udp4');
+  v3server.on('listening', () => {
+    let address = v3server.address();
+    if (typeof address === "object")
+      console.log('V3.1 and V4.0 UDP Server listening on ' + address.address + ":" + address.port);
+  });
 
-v3server.on('message', (message, remote) => {
-  handleV3V4Message(message, udpStats)
-});
-v3server.bind(settings.udp34Port); // Listen on all interfaces
+  v3server.on('message', (message, remote) => {
+    handleV3V4Message(message, udpStats)
+  });
+  v3server.bind(global.settings.udp34Port); // Listen on all interfaces
+}
 
+if (global.settings.udp5Port > 0) {
+  let v5server: dgram.Socket = dgram.createSocket('udp4');
 
-let v5server: dgram.Socket = dgram.createSocket('udp4');
+  v5server.on('listening', () => {
+    let address = v5server.address();
+    if (typeof address === "object")
+      console.log('V5.0 UDP Server listening on ' + address.address + ":" + address.port);
+  });
 
-v5server.on('listening', () => {
-  let address = v5server.address();
-  if (typeof address === "object")
-    console.log('V5.0 UDP Server listening on ' + address.address + ":" + address.port);
-});
+  v5server.on('message', (message, remote) => {
+    handleV5Message(message, udpStats)
+  });
+  v5server.bind(global.settings.udp5Port); // Listen on all interfaces
+}
 
-v5server.on('message', (message, remote) => {
-  handleV5Message(message, udpStats)
-});
-v5server.bind(settings.udp5Port); // Listen on all interfaces
+if (global.settings.tcp3Port > 0) {
+  let tcpV3Server = net.createServer();
+  tcpV3Server.on('listening', () => {
+    let address = tcpV3Server.address();
+    if (typeof address === "object")
+      console.log('TCP V3 Server listening on ' + address.address + ":" + address.port);
+  });
 
+  tcpV3Server.on('connection', (conn) => {
+    console.log('new TCP V3 client connection from %s', conn.remoteAddress + ':' + conn.remotePort);
 
-let tcpV3Server = net.createServer();
-tcpV3Server.on('listening', () => {
-  let address = tcpV3Server.address();
-  if (typeof address === "object")
-    console.log('TCP V3 Server listening on ' + address.address + ":" + address.port);
-});
+    var chunk = Buffer.alloc(0)
+    conn.on('data', (message) => {
+      message = Buffer.concat([chunk, message])
+      while (message.length >= 18) {
+        handleV3V4Message(message.subarray(0, 18), tcpStats)
+        message = message.subarray(18)
+      }
+      chunk = message
+    })
+  });
 
+  tcpV3Server.listen(global.settings.tcp3Port
+  );
+}
 
-tcpV3Server.on('connection', (conn) => {
-  console.log('new TCP V3 client connection from %s', conn.remoteAddress + ':' + conn.remotePort);
+if (global.settings.tcp3Port > 0) {
+  let tcpV4Server = net.createServer();
+  tcpV4Server.on('listening', () => {
+    let address = tcpV4Server.address();
+    if (typeof address === "object")
+      console.log('TCP V4 Server listening on ' + address.address + ":" + address.port);
+  });
 
-  var chunk = Buffer.alloc(0)
-  conn.on('data', (message) => {
-    message = Buffer.concat([chunk, message])
-    while (message.length >= 18) {
-      handleV3V4Message(message.subarray(0, 18), tcpStats)
-      message = message.subarray(18)
-    }
-    chunk = message
-  })
-});
+  tcpV4Server.on('connection', (conn) => {
+    console.log('new TCP V4 client connection from %s', conn.remoteAddress + ':' + conn.remotePort);
 
-tcpV3Server.listen(settings.tcp3Port
-);
+    var chunk = Buffer.alloc(0)
+    conn.on('data', (message) => {
+      message = Buffer.concat([chunk, message])
+      while (message.length >= 22) {
+        handleV3V4Message(message.subarray(0, 22), tcpStats)
+        message = message.subarray(22)
+      }
+      chunk = message
+    })
+  });
 
-let tcpV4Server = net.createServer();
-tcpV4Server.on('listening', () => {
-  let address = tcpV4Server.address();
-  if (typeof address === "object")
-    console.log('TCP V4 Server listening on ' + address.address + ":" + address.port);
-});
-
-tcpV4Server.on('connection', (conn) => {
-  console.log('new TCP V4 client connection from %s', conn.remoteAddress + ':' + conn.remotePort);
-
-  var chunk = Buffer.alloc(0)
-  conn.on('data', (message) => {
-    message = Buffer.concat([chunk, message])
-    while (message.length >= 22) {
-      handleV3V4Message(message.subarray(0, 22), tcpStats)
-      message = message.subarray(22)
-    }
-    chunk = message
-  })
-});
-
-tcpV4Server.listen(settings.tcp4Port);
+  tcpV4Server.listen(global.settings.tcp4Port);
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

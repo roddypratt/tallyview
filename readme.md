@@ -48,12 +48,17 @@
 
 TallyView gives a live view of UMD text and tallies received using the TSL UMD protocol, either V3.1 or V4.
 
-TallyView receives UDP messages on port 40001 (currently hardwired), and automatically detects both V3.1 and V4 protocol variants. V4 packets with bad checksums are ignored. 
-TallyView receives TCP messages on port 40001 (currently hardwired). This only supports V3.1 protocol. 
+TallyView receives...
+* V3.1 and V4 UDP messages on port 40001. V4 packets with bad checksums are ignored. 
+* V5 UDP messages on port 4003. Both unicode and non-unicode are supported.
+* V3.1 TCP messages on port 40001  
+* V4 TCP messages on port 40002
+
+Yuo can override the default ports by editing the "settings.json" file in `c:\users\<username>\Appdata\Roaming\TallyView` 
 
 ![TallyView Screen Shot](screenshot.png)
 
-### Built With
+### Built With...
 
 * [TypeScript]()
 * [Electron]()
@@ -108,8 +113,6 @@ Distributed under the ISC License. See `LICENSE` for more information.
 ## Contact
 
 Project Link: [https://github.com/roddypratt/tallyview](https://github.com/roddypratt/tallyview)
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->

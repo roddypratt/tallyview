@@ -8,7 +8,19 @@
 import * as $ from 'jquery';
 import * as bootstrap from "bootstrap"
 
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
+let render = require('electron').ipcRenderer
+
+let settings: any = {}
+window.process.argv.some((val) => {
+    if (val.startsWith("--settings=")) {
+        settings = JSON.parse(val.substr(11))
+        return true
+    }
+});
+
+$("#settingsjson").text(JSON.stringify(settings, null, 2));
+console.log(settings)
+let numDisplays = settings.displays
 
 $(() => {
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
@@ -16,8 +28,9 @@ $(() => {
         return new bootstrap.Popover(popoverTriggerEl)
     })
 
+
     let table = $("#tallytab");
-    for (var j = 0; j < 128; j++) {
+    for (var j = 0; j < numDisplays; j++) {
         let row = $('<tr id="tally' + j + '"></tr>');
         var rowData = $('<td>' + j + '</td><td></td><td>...</td><td></td><td></td><td></td>');
         row.append(rowData);
@@ -40,7 +53,6 @@ function tallyToCol(t: number): string {
     }
 }
 
-let render = require('electron').ipcRenderer
 
 render.on('tally', (event, addr: number, msg: string, tally1: number, tally2: number, tally3: number, tally4: number) => {
 
