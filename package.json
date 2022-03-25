@@ -21,7 +21,7 @@
   "devDependencies": {
     "@yarnpkg/pnpify": "^3.0.0-rc.14",
     "@yarnpkg/sdks": "^2.4.1-rc.4",
-    "electron": "^13.1.7",
+    "electron": "^13.6.6",
     "electron-builder": "^22.11.10",
     "typescript": "^4.3.5"
   },
