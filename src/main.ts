@@ -54,7 +54,7 @@ function createWindow() {
   Menu.setApplicationMenu(menu);
 
   app.setAboutPanelOptions({
-    applicationName: "TallyView", applicationVersion: "V1.1", copyright: "© 2020-2021, Rascular Technology Ltd.", website: "https://rascular.com", iconPath: "build/icon.png"
+    applicationName: "TallyView", applicationVersion: "V1.2", copyright: "© 2020-2024, Rascular Technology Ltd.", website: "https://rascular.com", iconPath: "build/icon.png"
   })
 
   const startUrl = 'file://' + path.resolve(path.join(__dirname, '../index.html'));
@@ -67,6 +67,10 @@ function createWindow() {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+
+  const dataPath = storage.getDataPath();
+  console.log("DataPath=", dataPath);
 }
 
 function checksum(buff: Buffer): number {
@@ -148,7 +152,9 @@ function isObjectEmpty(obj) {
 
 import storage = require('electron-json-storage');
 
+
 app.setName("TallyView")
+
 
 let stored: Settings = storage.getSync("settings")
 if (!isObjectEmpty(stored))
